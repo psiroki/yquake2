@@ -255,8 +255,16 @@ Key_GetMenuKey(int key)
 		case K_MOUSE4:
 		case K_MOUSE5:
 
-		case K_JOY1:
 		case K_JOY2:
+		case K_KP_ENTER:
+		case K_ENTER:
+			return K_ENTER;
+
+		case K_ESCAPE:
+		case K_JOY_BACK:
+			return K_ESCAPE;
+
+		case K_JOY1:
 		case K_JOY3:
 		case K_JOY4:
 		case K_JOY5:
@@ -286,14 +294,7 @@ Key_GetMenuKey(int key)
 		case K_JOY29:
 		case K_JOY30:
 		case K_JOY31:
-
-		case K_KP_ENTER:
-		case K_ENTER:
-			return K_ENTER;
-
-		case K_ESCAPE:
-		case K_JOY_BACK:
-			return K_ESCAPE;
+            return K_SHIFT;
 	}
 
 	return key;
@@ -1002,11 +1003,13 @@ Keys_MenuKey(int key)
     {
     case K_KP_ENTER:
     case K_ENTER:
+    case K_JOY2:
         KeyBindingFunc(item);
         return menu_in_sound;
     case K_BACKSPACE: /* delete bindings */
     case K_DEL: /* delete bindings */
     case K_KP_DEL:
+    case K_JOY_BACK:
         M_UnbindCommand(bindnames[item->generic.localdata[0]][0]);
         return menu_out_sound;
     default:
