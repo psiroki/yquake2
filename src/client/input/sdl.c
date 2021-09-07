@@ -48,6 +48,7 @@
 // actual movement functions called at a later time.
 static float mouse_x, mouse_y;
 static int back_button_id = -1;
+static int start_button_id = -1;
 static int up_button_id = -1;
 static int down_button_id = -1;
 static int left_button_id = -1;
@@ -594,21 +595,25 @@ IN_Update(void)
 				{
 					Key_Event(K_JOY_BACK, down, true);
 				}
+                else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
+                {
+                    Key_Event(K_ESCAPE, down, true);
+                }
                 else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
                 {
-                    Key_Event(K_UPARROW, down, true);
+                    Key_Event(K_HAT_UP, down, true);
                 }
                 else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
                 {
-                    Key_Event(K_DOWNARROW, down, true);
+                    Key_Event(K_HAT_DOWN, down, true);
                 }
                 else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
                 {
-                    Key_Event(K_LEFTARROW, down, true);
+                    Key_Event(K_HAT_LEFT, down, true);
                 }
                 else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
                 {
-                    Key_Event(K_RIGHTARROW, down, true);
+                    Key_Event(K_HAT_RIGHT, down, true);
                 }
 				break;
 			}
@@ -757,6 +762,11 @@ IN_Update(void)
 				{
 					return;
 				}
+				if (start_button_id == event.jbutton.button)
+				{
+				    return;
+				}
+				
 				if (up_button_id == event.jbutton.button)
 				{
 					return;
@@ -1318,10 +1328,12 @@ IN_Init(void)
 					if(SDL_IsGameController(i))
 					{
 						SDL_GameControllerButtonBind backBind;
+						SDL_GameControllerButtonBind startBind;
 						SDL_GameControllerButtonBind upBind;
 						SDL_GameControllerButtonBind downBind;
 						SDL_GameControllerButtonBind leftBind;
 						SDL_GameControllerButtonBind rightBind;
+					
 						controller = SDL_GameControllerOpen(i);
 
 						Com_Printf ("Controller settings: %s\n", SDL_GameControllerMapping(controller));
@@ -1347,6 +1359,14 @@ IN_Init(void)
 						{
 							back_button_id = backBind.value.button;
 							Com_Printf ("\nBack button JOY%d will be unbindable.\n", back_button_id+1);
+						}
+						
+						startBind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_START);
+
+						if (startBind.bindType == SDL_CONTROLLER_BINDTYPE_BUTTON)
+						{
+							start_button_id = startBind.value.button;
+							Com_Printf ("\nStart button JOY%d will be unbindable.\n", start_button_id+1);
 						}
 						
 						upBind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP);
@@ -1445,10 +1465,12 @@ IN_Shutdown(void)
 	if (controller)
 	{
 		back_button_id = -1;
+		start_button_id = -1;
 		up_button_id = -1;
 		down_button_id = -1;
 		left_button_id = -1;
 		right_button_id = -1;
+
 		SDL_GameControllerClose(controller);
 		controller  = NULL;
 	}
