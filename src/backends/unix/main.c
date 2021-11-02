@@ -33,6 +33,7 @@
 #ifndef FNDELAY
 #define FNDELAY O_NDELAY
 #endif
+#define __HAIKU__
 
 #include "../../common/header/common.h"
 

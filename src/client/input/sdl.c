@@ -33,6 +33,7 @@
 #include "../../client/header/keyboard.h"
 #include "../../client/header/client.h"
 
+#define __NoHatJoystick__ //Include this definition for gameforce chi and other devices that don't support d-pad hat events to provide support for d-pad hat events 
 // ----
 
 // Maximal mouse move per frame
@@ -48,11 +49,13 @@
 // actual movement functions called at a later time.
 static float mouse_x, mouse_y;
 static int back_button_id = -1;
-static int start_button_id = -1;
-static int up_button_id = -1;
-static int down_button_id = -1;
-static int left_button_id = -1;
-static int right_button_id = -1;
+//#ifdef __NoHatJoystick__
+    static int start_button_id = -1;
+    static int up_button_id = -1;
+    static int down_button_id = -1;
+    static int left_button_id = -1;
+    static int right_button_id = -1;
+//#endif
 static float joystick_yaw, joystick_pitch;
 static float joystick_forwardmove, joystick_sidemove;
 static float joystick_up;
@@ -595,6 +598,7 @@ IN_Update(void)
 				{
 					Key_Event(K_JOY_BACK, down, true);
 				}
+#ifdef __NoHatJoystick__
                 else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START)
                 {
                     Key_Event(K_ESCAPE, down, true);
@@ -615,6 +619,7 @@ IN_Update(void)
                 {
                     Key_Event(K_HAT_RIGHT, down, true);
                 }
+#endif
 				break;
 			}
 
@@ -762,6 +767,7 @@ IN_Update(void)
 				{
 					return;
 				}
+#ifdef __NoHatJoystick__
 				if (start_button_id == event.jbutton.button)
 				{
 				    return;
@@ -783,6 +789,7 @@ IN_Update(void)
 				{
 					return;
 				}
+#endif
 
 				if (event.jbutton.button <= (K_JOY32 - K_JOY1))
 				{
@@ -1328,11 +1335,13 @@ IN_Init(void)
 					if(SDL_IsGameController(i))
 					{
 						SDL_GameControllerButtonBind backBind;
-						SDL_GameControllerButtonBind startBind;
+#ifdef __NoHatJoystick__
+                    	SDL_GameControllerButtonBind startBind;
 						SDL_GameControllerButtonBind upBind;
 						SDL_GameControllerButtonBind downBind;
 						SDL_GameControllerButtonBind leftBind;
 						SDL_GameControllerButtonBind rightBind;
+#endif
 					
 						controller = SDL_GameControllerOpen(i);
 
@@ -1361,6 +1370,7 @@ IN_Init(void)
 							Com_Printf ("\nBack button JOY%d will be unbindable.\n", back_button_id+1);
 						}
 						
+#ifdef __NoHatJoystick__
 						startBind = SDL_GameControllerGetBindForButton(controller, SDL_CONTROLLER_BUTTON_START);
 
 						if (startBind.bindType == SDL_CONTROLLER_BINDTYPE_BUTTON)
@@ -1400,7 +1410,7 @@ IN_Init(void)
 							right_button_id = rightBind.value.button;
 							Com_Printf ("\nRight button JOY%d will be unbindable.\n", right_button_id+1);
 						}
-
+#endif
 						break;
 					}
 					else
@@ -1465,12 +1475,13 @@ IN_Shutdown(void)
 	if (controller)
 	{
 		back_button_id = -1;
+#ifdef __NoHatJoystick__
 		start_button_id = -1;
 		up_button_id = -1;
 		down_button_id = -1;
 		left_button_id = -1;
 		right_button_id = -1;
-
+#endif
 		SDL_GameControllerClose(controller);
 		controller  = NULL;
 	}
