@@ -160,6 +160,10 @@ else
 CFLAGS ?= -O2 -Wall -pipe -fomit-frame-pointer
 endif
 
+ifeq ($(YQ2_TARGETING), JELOS)
+CFLAGS += -DIGNORE_ROOT
+endif
+
 # Always needed are:
 #  -fno-strict-aliasing since the source doesn't comply
 #   with strict aliasing rules and it's next to impossible
@@ -396,11 +400,13 @@ config:
 	@echo "Build configuration"
 	@echo "============================"
 	@echo "YQ2_ARCH = $(YQ2_ARCH) COMPILER = $(COMPILER)"
+	@echo "YQ2_TARGETING = $(YQ2_TARGETING)"
 	@echo "WITH_CURL = $(WITH_CURL)"
 	@echo "WITH_OPENAL = $(WITH_OPENAL)"
 	@echo "WITH_RPATH = $(WITH_RPATH)"
 	@echo "WITH_SYSTEMWIDE = $(WITH_SYSTEMWIDE)"
 	@echo "WITH_SYSTEMDIR = $(WITH_SYSTEMDIR)"
+	@echo "CFLAGS = $(CFLAGS)"
 	@echo "============================"
 	@echo ""
 
